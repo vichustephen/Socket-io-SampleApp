@@ -57,27 +57,11 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         try{
             mSocket = IO.socket("http://192.168.0.182:3000");
-            mSocket.on("new message",onMessage);
             mSocket.connect();
+            mSocket.on("new message",onMessage);
             mSocket.on(Socket.EVENT_CONNECT,onConnect);
             mSocket.on(Socket.EVENT_CONNECT_ERROR,onConnectError);
             mSocket.on(Socket.EVENT_CONNECT_TIMEOUT,onConnectTimeout);
-            mSocket.on("test",onTest);
-            mSocket.io().on(Manager.EVENT_TRANSPORT, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    Transport transport =   (Transport)args[0];
-                    transport.on(Transport.EVENT_ERROR, new Emitter.Listener() {
-                        @Override
-                        public void call(Object... args) {
-                            Exception e = (Exception) args[0];
-                            Log.e("ErrorConnecting:"," "+ e);
-                            e.printStackTrace();
-                            e.getCause().printStackTrace();
-                        }
-                    });
-                }
-            });
          //   mSocket.emit("new Message")
         }
         catch (Exception e)
@@ -136,17 +120,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("ConnectionInfo: ", "Connection TimedOut");
                 }
             });
-        }
-    };
-    private Emitter.Listener onTest = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-          runOnUiThread(new Runnable() {
-              @Override
-              public void run() {
-                  Toast.makeText(getApplicationContext(),"Test gone right",Toast.LENGTH_SHORT).show();
-              }
-          });
         }
     };
     @Override
